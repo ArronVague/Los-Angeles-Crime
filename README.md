@@ -71,3 +71,15 @@ premise_code (premise_description) 遇害地点（如酒店、夜总会等）
 weapon_code (weapon_description) 武器
 
 ## 不知道怎么分的列
+
+## 参与贡献
+
+1. clone仓库
+2. 以main branch为基础new branch
+3. 在新建分支上编写代码
+4. commit代码到本地
+5. publish branch到仓库
+6. 创建pull request
+7. 经审核人员审核后merge到main branch
+
+忽略中英文表达 :triumph: 。
