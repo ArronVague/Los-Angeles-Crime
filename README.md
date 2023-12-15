@@ -26,6 +26,8 @@
 
 ## 特征
 
+date_occurred 发生日期
+
 area (area_name) 地区
 
 victim_age 受害者年龄
@@ -60,11 +62,11 @@ cross_street 临近街道
 
 ## 标签
 
-date_occurred 发生日期
+
 
 crime_code (crime_descroption) 犯罪描述
 
-premise_code (premise_description) 遇害地点
+premise_code (premise_description) 遇害地点（如酒店、夜总会等）
 
 weapon_code (weapon_description) 武器
 
