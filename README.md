@@ -2,6 +2,8 @@
 
 机器学习实验课大作业
 
+环境：Python 3.9.17
+
 数据集
 
 [Los Angeles Crime Data 2020-2023](https://www.kaggle.com/datasets/asaniczka/crimes-in-los-angeles-2020-2023/data)
@@ -62,8 +64,6 @@ cross_street 临近街道
 
 ## 标签
 
-
-
 crime_code (crime_descroption) 犯罪描述
 
 premise_code (premise_description) 遇害地点（如酒店、夜总会等）
@@ -71,4 +71,3 @@ premise_code (premise_description) 遇害地点（如酒店、夜总会等）
 weapon_code (weapon_description) 武器
 
 ## 不知道怎么分的列
-
