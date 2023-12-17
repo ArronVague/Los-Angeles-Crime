@@ -14,18 +14,6 @@ jupyter环境：Python 3.9.17
 
 “部门编号”、“报告日期”、“发生日期”、“区域”、“区域名称”、“报告地区”、“部分”、“犯罪代码”、“犯罪描述”、“作案方式”、“受害者年龄”、“受害者性别”、“受害者血统”、"前提代码"、"前提描述"、"武器代码"、"武器描述"、"状态"、"状态描述"、"犯罪代码1"、"犯罪代码2"、"犯罪代码3"、"犯罪代码4"、"位置"、"交叉街道"、"纬度 “，“经度”
 
-[Los Angeles Crime Data Quick EDA 🦹🏼‍♂️](https://www.kaggle.com/code/guslovesmath/los-angeles-crime-data-quick-eda)
-
-每个区域犯罪分布
-
-犯罪状态统计
-
-受害者血统
-
-区域
-
-[CrimeSolver Predictor](https://www.kaggle.com/code/safronov00/crimesolver-predictor#2.-Clean-Data)
-
 ## 特征
 
 date_occurred 发生日期
@@ -41,6 +29,14 @@ victim_descent 受害者血统
 latitude 纬度坐标
 
 longitude 经度坐标
+
+## 标签
+
+crime_code (crime_descroption) 犯罪描述
+
+premise_code (premise_description) 遇害地点（如酒店、夜总会等）
+
+weapon_code (weapon_description) 武器
 
 ## 没用的特征
 
@@ -62,16 +58,6 @@ location 详细地址
 
 cross_street 临近街道
 
-## 标签
-
-crime_code (crime_descroption) 犯罪描述
-
-premise_code (premise_description) 遇害地点（如酒店、夜总会等）
-
-weapon_code (weapon_description) 武器
-
-## 不知道怎么分的列
-
 ## 参与贡献
 
 1. clone仓库
@@ -83,3 +69,18 @@ weapon_code (weapon_description) 武器
 7. 经审核人员审核后merge到main branch
 
 忽略中英文表达 :triumph: 。
+
+## 参考文献
+
+[Los Angeles Crime Data Quick EDA 🦹🏼‍♂️](https://www.kaggle.com/code/guslovesmath/los-angeles-crime-data-quick-eda)
+
+- 每个区域犯罪分布
+
+- 犯罪状态统计
+
+- 受害者血统
+
+- 区域
+
+[CrimeSolver Predictor](https://www.kaggle.com/code/safronov00/crimesolver-predictor#2.-Clean-Data)
+
