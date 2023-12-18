@@ -346,6 +346,9 @@ fig.add_trace(
 )
 
 # Horizontal bar chart for victim_descent
+# 按从大到小的顺序排列
+victim_descent_data = victim_descent_data.sort_values(ascending=False)
+
 fig.add_trace(
     go.Bar(
         x=victim_descent_data.values,
@@ -371,6 +374,93 @@ fig.update_layout(
 
 fig.update_yaxes(title_text="Number of Cases", row=1, col=2)
 fig.update_xaxes(title_text="Victim Descent", row=1, col=2)
+
+# Display the plot
+# fig.show()
+
+# Top 10 most common crime descriptions (excluding 'Unknown')
+top_crimes = (
+    data[data["crime_description"] != "Unknown"]["crime_description"]
+    .value_counts()
+    .head(10)
+)
+
+# Top 10 most common weapons (excluding 'Unknown', 'UNKNOWN WEAPON/OTHER WEAPON')
+top_weapons = (
+    data[~data["weapon_description"].isin(["Unknown", "UNKNOWN WEAPON/OTHER WEAPON"])][
+        "weapon_description"
+    ]
+    .value_counts()
+    .head(10)
+)
+
+# Top 10 most common premise_description
+top_premises = (
+    data[data["premise_description"] != "Unknown"]["premise_description"]
+    .value_counts()
+    .head(10)
+)
+
+# Setting up the figure with two subplots
+fig = make_subplots(
+    rows=3,
+    cols=1,
+    subplot_titles=(
+        "Top 10 Crime Descriptions",
+        "Top 10 Weapons Used in Crimes",
+        "Top 10 Premises",
+    ),
+)
+
+# Horizontal bar chart for top 10 crime descriptions
+fig.add_trace(
+    go.Bar(
+        x=top_crimes.values,
+        y=top_crimes.index,
+        orientation="h",
+        marker_color="dodgerblue",
+    ),
+    row=1,
+    col=1,
+)
+
+# Horizontal bar chart for top 10 weapons used
+fig.add_trace(
+    go.Bar(
+        x=top_weapons.values, y=top_weapons.index, orientation="h", marker_color="coral"
+    ),
+    row=2,
+    col=1,
+)
+
+fig.add_trace(
+    go.Bar(
+        x=top_premises.values,
+        y=top_premises.index,
+        orientation="h",
+        marker_color="mediumseagreen",
+    ),
+    row=3,
+    col=1,
+)
+
+# Update layout for the charts
+fig.update_layout(
+    height=800,
+    showlegend=False,
+    template="plotly_white",
+    title_text="Top 10 Crime Descriptions, Weapons Used and Premises in Crimes",
+)
+
+# Inverting y-axis for both plots to display the highest value at the top
+fig.update_yaxes(autorange="reversed", row=1, col=1)
+fig.update_yaxes(autorange="reversed", row=2, col=1)
+fig.update_yaxes(autorange="reversed", row=3, col=1)
+
+# Update x-axis titles
+fig.update_xaxes(title_text="Number of Cases", row=1, col=1)
+fig.update_xaxes(title_text="Number of Cases", row=2, col=1)
+fig.update_xaxes(title_text="Number of Cases", row=3, col=1)
 
 # Display the plot
 fig.show()
