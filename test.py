@@ -226,3 +226,75 @@ fig.update_layout(
 )
 
 # fig.show()
+
+# 展示一年中每天的犯罪数量
+# nbins=365
+# fig = px.histogram(
+#     feature, x="month_day", nbins=365, color_discrete_sequence=["dodgerblue"]
+# )
+
+# # 横坐标需要显示为 月-日，而不是 年-月
+# fig.update_layout(
+#     title_text="Distribution of Month and Day",
+#     xaxis_title_text="Month and Day",
+#     yaxis_title_text="Frequency",
+#     bargap=0.2,
+#     template="plotly_white",
+# )
+
+# fig.show()
+
+feature["month"] = data["date_occurred"].dt.month
+feature["day"] = data["date_occurred"].dt.day
+
+daily_crime_counts = (
+    feature.groupby(["month", "day"]).size().reset_index(name="crime_count")
+)
+pivot_table = daily_crime_counts.pivot(
+    index="day", columns="month", values="crime_count"
+)
+
+monthly_crime_counts = feature["month"].value_counts().sort_index()
+
+fig = make_subplots(
+    rows=1,
+    cols=2,
+    subplot_titles=("Daily Crime Frequency by Month", "Monthly Crime Distribution"),
+)
+
+for month in pivot_table.columns:
+    fig.add_trace(
+        go.Scatter(
+            x=pivot_table.index,
+            y=pivot_table[month],
+            mode="lines",
+            name=str(month),
+        ),
+        row=1,
+        col=1,
+    )
+
+fig.add_trace(
+    go.Bar(
+        x=monthly_crime_counts.index,
+        y=monthly_crime_counts.values,
+        marker_color="dodgerblue",
+    ),
+    row=1,
+    col=2,
+)
+
+fig.update_layout(height=600, width=1200, template="plotly_white", showlegend=True)
+fig.update_xaxes(
+    title_text="Day",
+    row=1,
+    col=1,
+    tickmode="array",
+    tickvals=list(range(1, 32)),
+    ticktext=list(range(1, 32)),
+)
+fig.update_xaxes(title_text="Month", row=1, col=2)
+fig.update_yaxes(title_text="Number of Crimes", row=1, col=1)
+fig.update_yaxes(title_text="Number of Crimes", row=1, col=2)
+
+fig.show()
