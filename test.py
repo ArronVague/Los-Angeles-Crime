@@ -297,4 +297,31 @@ fig.update_xaxes(title_text="Month", row=1, col=2)
 fig.update_yaxes(title_text="Number of Crimes", row=1, col=1)
 fig.update_yaxes(title_text="Number of Crimes", row=1, col=2)
 
+# fig.show()
+
+feature["hour"] = data["date_occurred"].dt.hour
+
+hourly_crime_counts = feature["hour"].value_counts().sort_index()
+
+fig = px.bar(
+    x=hourly_crime_counts.index,
+    y=hourly_crime_counts.values,
+    labels={"x": "Hour of the Day (0-23)", "y": "Number of Crimes"},
+    color_discrete_sequence=["dodgerblue"],
+)
+
+# Updating layout for the plot
+fig.update_layout(
+    title="Crime Distribution by Hour of the Day",
+    template="plotly_white",
+    showlegend=False,
+)
+
+fig.update_xaxes(
+    tickmode="array",
+    tickvals=list(range(24)),
+    ticktext=[str(hour) for hour in range(24)],
+)
+
+# Display the plot
 fig.show()
