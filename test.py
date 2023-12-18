@@ -211,4 +211,18 @@ fig.update_layout(
     template="plotly_white",
 )
 
-fig.show()
+# fig.show()
+
+feature["month"] = data["date_occurred"].dt.month
+
+fig = px.histogram(feature, x="month", nbins=12, color_discrete_sequence=["dodgerblue"])
+
+fig.update_layout(
+    title_text="Distribution of Month",
+    xaxis_title_text="Month",
+    yaxis_title_text="Frequency",
+    bargap=0.2,
+    template="plotly_white",
+)
+
+# fig.show()
