@@ -20,6 +20,10 @@ Python 3.9.17
 
 date_occurred 发生日期
 
+- month_day
+  - month
+  - day
+
 area (area_name) 地区
 
 victim_age 受害者年龄
