@@ -86,3 +86,9 @@ cross_street 临近街道
 
 [CrimeSolver Predictor](https://www.kaggle.com/code/safronov00/crimesolver-predictor#2.-Clean-Data)
 
+- data overview
+  - victim age
+  - monthly crime（准备做成365天的，不看年份）
+  - hour of the day
+  - victim sex and descent distribution
+  - top 10 crime descriptions and weapons used in crimes
