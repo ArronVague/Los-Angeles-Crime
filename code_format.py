@@ -324,4 +324,53 @@ fig.update_xaxes(
 )
 
 # Display the plot
+# fig.show()
+
+victim_sex_data = feature["victim_sex"].value_counts()
+victim_descent_data = feature["victim_descent"].value_counts()
+total_cases = victim_descent_data.sum()
+
+fig = make_subplots(rows=1, cols=2, specs=[[{"type": "pie"}, {"type": "bar"}]])
+
+# Pie plot for victim_sex
+fig.add_trace(
+    go.Pie(
+        labels=victim_sex_data.index,
+        values=victim_sex_data,
+        title="Victim Sex Distribution",
+        textinfo="label+percent",
+        insidetextorientation="radial",
+    ),
+    row=1,
+    col=1,
+)
+
+# Horizontal bar chart for victim_descent
+fig.add_trace(
+    go.Bar(
+        x=victim_descent_data.values,
+        y=victim_descent_data.index,
+        orientation="h",
+        marker_color="dodgerblue",
+        text=[
+            f"{count} ({count/total_cases:.2%})" for count in victim_descent_data.values
+        ],
+        textposition="outside",
+    ),
+    row=1,
+    col=2,
+)
+
+# Update layout for the bar chart
+fig.update_layout(
+    title_text="Victim Sex and Descent Distribution",
+    template="plotly_white",
+    showlegend=False,
+    height=600,
+)
+
+fig.update_yaxes(title_text="Number of Cases", row=1, col=2)
+fig.update_xaxes(title_text="Victim Descent", row=1, col=2)
+
+# Display the plot
 fig.show()
