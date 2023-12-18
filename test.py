@@ -129,67 +129,86 @@ fig = px.scatter_mapbox(
 fig.update_layout(mapbox_style="open-street-map")
 # fig.show()
 
-# Preparing data for bar plots
-# status_counts = df['status_description'].value_counts()
-# area_counts = df['area_name'].value_counts()
-# victim_descent_counts = df['victim_descent'].value_counts()
+
+# month_day_counts = feature["month_day"].value_counts()
+# area_counts = feature["area"].value_counts()
+# victim_age_counts = feature["victim_age"].value_counts()
+# victim_sex_counts = feature["victim_sex"].value_counts()
+# victim_descent_counts = feature["victim_descent"].value_counts()
 
 # # Creating subplots
-# fig = make_subplots(rows=1, cols=3, subplot_titles=("Crimes by Status", "Crimes by Area", 'Crimes by Victom Descent'))
+# fig = make_subplots(
+#     rows=1,
+#     cols=5,
+#     subplot_titles=(
+#         "Crimes by month and day",
+#         "Crimes by area",
+#         "Crimes by victim age",
+#         "Crimes by victim sex",
+#         "Crimes by victim descent",
+#     ),
+# )
 
-month_day_counts = feature["month_day"].value_counts()
-area_counts = feature["area"].value_counts()
-victim_age_counts = feature["victim_age"].value_counts()
-victim_sex_counts = feature["victim_sex"].value_counts()
-victim_descent_counts = feature["victim_descent"].value_counts()
 
-# Creating subplots
-fig = make_subplots(
-    rows=1,
-    cols=5,
-    subplot_titles=(
-        "Crimes by month and day",
-        "Crimes by area",
-        "Crimes by victim age",
-        "Crimes by victim sex",
-        "Crimes by victim descent",
-    ),
-)
-
-# fig.add_trace(go.Bar(x=status_counts.index, y=status_counts.values, name="Status"), row=1, col=1)
-# fig.add_trace(go.Bar(x=area_counts.index, y=area_counts.values, name="Area"), row=1, col=2)
-# fig.add_trace(go.Bar(x=victim_descent_counts.index, y=victim_descent_counts.values, name="Victim Descent"), row=1, col=3)
+# fig.add_trace(
+#     go.Bar(x=month_day_counts.index, y=month_day_counts.values, name="Month and Day"),
+#     row=1,
+#     col=1,
+# )
+# fig.add_trace(
+#     go.Bar(x=area_counts.index, y=area_counts.values, name="Area"), row=1, col=2
+# )
+# fig.add_trace(
+#     go.Bar(x=victim_age_counts.index, y=victim_age_counts.values, name="Victim Age"),
+#     row=1,
+#     col=3,
+# )
+# fig.add_trace(
+#     go.Bar(x=victim_sex_counts.index, y=victim_sex_counts.values, name="Victim Sex"),
+#     row=1,
+#     col=4,
+# )
+# fig.add_trace(
+#     go.Bar(
+#         x=victim_descent_counts.index,
+#         y=victim_descent_counts.values,
+#         name="Victim Descent",
+#     ),
+#     row=1,
+#     col=5,
+# )
 
 # fig.update_layout(height=600, width=1000, showlegend=False)
 # fig.show()
 
-fig.add_trace(
-    go.Bar(x=month_day_counts.index, y=month_day_counts.values, name="Month and Day"),
-    row=1,
-    col=1,
-)
-fig.add_trace(
-    go.Bar(x=area_counts.index, y=area_counts.values, name="Area"), row=1, col=2
-)
-fig.add_trace(
-    go.Bar(x=victim_age_counts.index, y=victim_age_counts.values, name="Victim Age"),
-    row=1,
-    col=3,
-)
-fig.add_trace(
-    go.Bar(x=victim_sex_counts.index, y=victim_sex_counts.values, name="Victim Sex"),
-    row=1,
-    col=4,
-)
-fig.add_trace(
-    go.Bar(
-        x=victim_descent_counts.index,
-        y=victim_descent_counts.values,
-        name="Victim Descent",
-    ),
-    row=1,
-    col=5,
+fig = px.histogram(
+    feature, x="victim_age", nbins=30, color_discrete_sequence=["dodgerblue"]
 )
 
-fig.update_layout(height=600, width=1000, showlegend=False)
+fig.update_layout(
+    title_text="Distribution of Victim Age",
+    xaxis_title_text="Victim Age",
+    yaxis_title_text="Frequency",
+    bargap=0.2,
+    template="plotly_white",
+)
+
+# fig.show()
+
+# 用NaN替换无效的年龄（0和负数）
+feature["victim_age"] = feature["victim_age"].apply(lambda x: x if x > 0 else None)
+feature["victim_age"].replace(0, pd.NA, inplace=True)
+
+fig = px.histogram(
+    feature, x="victim_age", nbins=30, color_discrete_sequence=["dodgerblue"]
+)
+
+fig.update_layout(
+    title_text="Distribution of Victim Age",
+    xaxis_title_text="Victim Age",
+    yaxis_title_text="Frequency",
+    bargap=0.2,
+    template="plotly_white",
+)
+
 fig.show()
