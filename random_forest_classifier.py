@@ -10,25 +10,59 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.preprocessing import LabelEncoder
+import tensorflow as tf
 
 
 # %config InlineBackend.figure_format = 'retina'
 
 # import data
 data = pd.read_csv("Crime_Data_from_2020_to_Present.csv")
-# print(len(data))
-duplicate_rows = data.duplicated().sum()  # 重复的行数
-missing_values = data.isnull().sum()  # 每列的缺失值数量
-# print("重复行数：", duplicate_rows)
-# print("{:<18} {:<6} {}".format("字段名称", "字段类型", "缺失值数量"))
-# for i in range(len(data.columns)):
-#     print(
-#         "{:<20} {:<10} {}".format(
-#             data.columns[i], str(data.dtypes.iloc[i]), str(missing_values.iloc[i])
-#         )
-#     )
 
-data.head()
+# 除了这些列，其他列都删除
+# "date_occurred",
+# "area",
+# "crime_code",
+# "victim_age",
+# "victim_sex",
+# "victim_descent",
+# "premise_code",
+# "weapon_code",
+# "latitude",
+# "longitude",
+
+data.drop("crime_code_4", axis=1, inplace=True)
+
+# 打印行数
+print("Number of rows:", data.shape[0])
+# 删除存在缺失值的行
+data.dropna(inplace=True)
+
+# 删除没有用的列
+data.drop(
+    [
+        "division_number",
+        "date_reported",
+        "area_name",
+        "reporting_district",
+        "part",
+        "crime_description",
+        "modus_operandi",
+        "premise_description",
+        "weapon_description",
+        "status",
+        "status_description",
+        "crime_code_1",
+        "crime_code_2",
+        "crime_code_3",
+        "location",
+        "cross_street",
+    ],
+    axis=1,
+    inplace=True,
+)
+
+
+print("Number of rows after removing missing values:", data.shape[0])
 
 
 # 提取需要用到的数据：
@@ -51,55 +85,14 @@ def get_usefulData_feature_label(data):
     data["month_day"] = data["date_occurred"].dt.strftime("%m-%d")  # 月日
     data["specific_time"] = data["date_occurred"].dt.strftime("%H:%M:%S")  # 时分秒
 
-    # 1、提取相应列
-    useful_data = data[
-        [
-            "date_occurred",
-            "month_day",
-            "specific_time",
-            "area",
-            "area_name",
-            "victim_age",
-            "victim_sex",
-            "victim_descent",
-            "latitude",
-            "longitude",
-            "crime_code",
-            "crime_description",
-            "premise_code",
-            "premise_description",
-            "weapon_code",
-            "weapon_description",
-        ]
-    ].copy()
-    feature = data[
-        [
-            "month_day",
-            "area",
-            "victim_age",
-            "victim_sex",
-            "victim_descent",
-            "latitude",
-            "longitude",
-        ]
-    ].copy()
-    label = data[["specific_time", "crime_code", "premise_code", "weapon_code"]].copy()
-
     # 2、填补缺失值
-    fill_the_blank(useful_data)
-    fill_the_blank(feature)
-    fill_the_blank(label)
     fill_the_blank(data)
 
     # 3、如果检查没有空值则返回数据
-    if check(useful_data) and check(feature) and check(label):
-        print("空值已处理")
-        return useful_data, feature, label
-
-    raise ValueError("Some values are not valid.")
+    return
 
 
-useful_data, feature, label = get_usefulData_feature_label(data)
+get_usefulData_feature_label(data)
 
 data["month"] = data["date_occurred"].dt.month
 data["day"] = data["date_occurred"].dt.day
@@ -135,12 +128,35 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y_encoded, test_size=0.2, random_state=42
 )
 
+train_dataset = tf.data.Dataset.from_tensor_slices((X_train.values, y_train))
+test_dataset = tf.data.Dataset.from_tensor_slices((X_test.values, y_test))
+
+batch_size = 32
+
+train_dataset = train_dataset.shuffle(len(X_train)).batch(batch_size)
+test_dataset = test_dataset.batch(batch_size)
+
 # 创建和训练 RandomForestClassifier 模型
 rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
-rf_classifier.fit(X_train, y_train)
+
+num_epochs = 10
+
+for epoch in range(num_epochs):
+    for batch_data in train_dataset:
+        X_batch, y_batch = batch_data
+        rf_classifier.fit(X_batch, y_batch)
+
+# rf_classifier.fit(X_train, y_train)
 
 # 在测试集上进行预测
-y_pred = rf_classifier.predict(X_test)
+# y_pred = rf_classifier.predict(X_test)
+y_pred = []
+
+for batch_data in test_dataset:
+    X_batch, _ = batch_data
+    y_pred.append(rf_classifier.predict(X_batch))
+
+y_pred = np.concatenate(y_pred)
 
 # 计算准确性
 accuracy = accuracy_score(y_test, y_pred)
