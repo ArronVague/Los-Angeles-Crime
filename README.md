@@ -18,11 +18,15 @@ Python 3.9.17
 
 ## 特征
 
-date_occurred 发生日期
+~~date_occurred 发生日期~~（实际上这个不好编码）
 
-- month_day
-  - month
-  - day
+- ~~month_day~~
+  - ~~month~~
+  - ~~day~~
+
+month 月份（由date_occured拆分而来）
+
+day 日期（由date_occured拆分而来）
 
 area (area_name) 地区
 
@@ -37,6 +41,8 @@ latitude 纬度坐标
 longitude 经度坐标
 
 ## 标签
+
+specific_time 具体时间（如01:00，由date_occured拆分而来）
 
 crime_code (crime_descroption) 犯罪描述
 
