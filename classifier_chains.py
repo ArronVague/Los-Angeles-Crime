@@ -6,9 +6,13 @@ import plotly.graph_objects as go
 import nbformat
 from plotly.subplots import make_subplots
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.multioutput import ClassifierChain
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, mean_squared_error
 from sklearn.preprocessing import LabelEncoder
 import tensorflow as tf
 
@@ -17,6 +21,10 @@ import tensorflow as tf
 
 # import data
 data = pd.read_csv("Crime_Data_from_2020_to_Present.csv")
+
+# 取前3000行
+# 3000时准确率为0.25，用到的行只有38
+# data = data[:2000]
 
 # 除了这些列，其他列都删除
 # "date_occurred",
@@ -30,19 +38,19 @@ data = pd.read_csv("Crime_Data_from_2020_to_Present.csv")
 # "latitude",
 # "longitude",
 
-data.drop(
-    [
-        "crime_code_4",
-        "crime_code_3",
-    ],
-    axis=1,
-    inplace=True,
-)
+# data.drop(
+#     [
+#         "crime_code_3",
+#         "crime_code_4",
+#     ],
+#     axis=1,
+#     inplace=True,
+# )
 
 # 打印行数
 print("Number of rows:", data.shape[0])
 # 删除存在缺失值的行
-data.dropna(inplace=True)
+# data.dropna(inplace=True)
 
 # 删除没有用的列
 data.drop(
@@ -60,6 +68,8 @@ data.drop(
         "status_description",
         "crime_code_1",
         "crime_code_2",
+        "crime_code_3",
+        "crime_code_4",
         "location",
         "cross_street",
     ],
@@ -67,6 +77,7 @@ data.drop(
     inplace=True,
 )
 
+data.dropna(inplace=True)
 
 print("Number of rows after removing missing values:", data.shape[0])
 
@@ -102,6 +113,8 @@ get_usefulData_feature_label(data)
 
 data["month"] = data["date_occurred"].dt.month
 data["day"] = data["date_occurred"].dt.day
+data["hour"] = data["date_occurred"].dt.hour
+data["minute"] = data["date_occurred"].dt.minute
 
 # 用NaN替换无效的年龄（0和负数）
 mean_age = data["victim_age"].replace({0: None, np.nan: None}).mean()
@@ -123,57 +136,35 @@ X = data[
         "longitude",
     ]
 ]
-y = data[["specific_time", "crime_code", "premise_code", "weapon_code"]]
+y = data[["hour", "minute", "crime_code", "premise_code", "weapon_code"]]
 
-# 显示多几行
-print(len(X))
+# y = y.drop(["specific_time"], axis=1)
+
 print(X)
 print(y)
+# y = y.astype(str)
 
-y = y.astype(str)
-
-mlb = MultiLabelBinarizer()
-y_encoded = mlb.fit_transform(y.values)
+# mlb = MultiLabelBinarizer()
+# y_encoded = mlb.fit_transform(y.values)
 
 # 划分训练集和测试集
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y_encoded, test_size=0.2, random_state=42
+    X, y, test_size=0.2, random_state=42
 )
 
-# train_dataset = tf.data.Dataset.from_tensor_slices((X_train.values, y_train))
-# test_dataset = tf.data.Dataset.from_tensor_slices((X_test.values, y_test))
+# 定义基分类器
+base_classifier = DecisionTreeClassifier()
 
-# batch_size = 32
+# 定义分类器链
+cc = ClassifierChain(base_classifier, order="random", random_state=42)
 
-# train_dataset = train_dataset.shuffle(len(X_train)).batch(batch_size)
-# test_dataset = test_dataset.batch(batch_size)
+# 训练模型
+cc.fit(X_train, y_train)
 
-# # 创建和训练 RandomForestClassifier 模型
-# rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+# 在测试集上进行预测
+predictions = cc.predict(X_test)
 
-# num_epochs = 10
-
-# for epoch in range(num_epochs):
-#     for batch_data in train_dataset:
-#         X_batch, y_batch = batch_data
-#         rf_classifier.fit(X_batch, y_batch)
-
-# # rf_classifier.fit(X_train, y_train)
-
-# # 在测试集上进行预测
-# # y_pred = rf_classifier.predict(X_test)
-# y_pred = []
-
-# for batch_data in test_dataset:
-#     X_batch, _ = batch_data
-#     y_pred.append(rf_classifier.predict(X_batch))
-
-# y_pred = np.concatenate(y_pred)
-
-# # 计算准确性
-# accuracy = accuracy_score(y_test, y_pred)
-# print(f"Accuracy: {accuracy:.2f}")
-
-# # 输出分类报告
-# classification_rep = classification_report(y_test, y_pred, target_names=mlb.classes_)
-# print("Classification Report:\n", classification_rep)
+# 输出每个标签的分类报告
+for i, label in enumerate(y.columns):
+    print(f"Classification Report for {label}:")
+    print(classification_report(y_test[label], predictions[:, i]))
