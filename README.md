@@ -70,6 +70,36 @@ location 详细地址
 
 cross_street 临近街道
 
+## 算法汇总
+
+knn
+
+```python
+X = data[
+    [
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "area",
+        "victim_age",
+        "victim_sex",
+        "victim_descent",
+        "latitude",
+        "longitude",
+    ]
+]
+# "crime_code", "premise_code", "weapon_code"
+y = data["weapon_code"]
+
+```
+
+crime_code准确率只有0.21（可能真的没什么关联？）
+
+premise_code准确率只有0.27
+
+weapon_code准确率能到达0.63
+
 ## 参与贡献
 
 1. clone仓库
