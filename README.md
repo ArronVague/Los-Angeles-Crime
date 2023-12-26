@@ -28,6 +28,10 @@ month 月份（由date_occured拆分而来）
 
 day 日期（由date_occured拆分而来）
 
+hour（由date_occured拆分而来）
+
+minute（由date_occured拆分而来）
+
 area (area_name) 地区
 
 victim_age 受害者年龄
@@ -42,13 +46,15 @@ longitude 经度坐标
 
 ## 标签
 
-specific_time 具体时间（如01:00，由date_occured拆分而来）
+~~specific_time 具体时间（如01:00，由date_occured拆分而来）~~（效果极差）
 
-crime_code (crime_descroption) 犯罪描述
+crime_code (crime_descroption) 犯罪描述（训练效果差）
 
 premise_code (premise_description) 遇害地点（如酒店、夜总会等）
 
-weapon_code (weapon_description) 武器
+weapon_code (weapon_description) 武器（训练效果较好）
+
+status (status_descroption) 案件状态（训练效果好）
 
 ## 没用的特征
 
@@ -61,8 +67,6 @@ weapon_code (weapon_description) 武器
 ~~part 犯罪事件的部分号~~
 
 ~~modus_operandi 作案手法~~
-
-status (status_descroption) 案件状态
 
 crime_code_1/2/3/4 犯罪编号
 
@@ -152,6 +156,34 @@ y = data["crime_code"]
 |      |            |             |
 |      |            |             |
 |      |            |             |
+
+```python
+X = data[
+    [
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "area",
+        "victim_age",
+        "victim_sex",
+        "victim_descent",
+        "latitude",
+        "longitude",
+        "premise_code",
+    ]
+]
+# "weapon_code", "status"
+# crime_code的准确率实在是太低了，所以就不用了
+y = data["status"]
+```
+
+|            | weapon_code | status |
+| ---------- | ----------- | ------ |
+| knn        | 0.65        | 0.76   |
+| 朴素贝叶斯 | 0.21        | 0.12   |
+| 决策树     | 0.56        | 0.68   |
+| 链         | 0.56        | 0.68   |
 
 ## 参与贡献
 

@@ -1,20 +1,8 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import plotly.express as px
-import plotly.graph_objects as go
-import nbformat
-from plotly.subplots import make_subplots
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.multioutput import MultiOutputClassifier
 from sklearn.multioutput import ClassifierChain
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report, mean_squared_error
-from sklearn.preprocessing import LabelEncoder
-import tensorflow as tf
+from sklearn.metrics import accuracy_score, classification_report
 
 data = pd.read_csv("temp.csv")
 
@@ -30,11 +18,21 @@ X = data[
         "victim_descent",
         "latitude",
         "longitude",
+        "premise_code",
     ]
 ]
 # y = data[["crime_code", "premise_code", "weapon_code"]]
 # 反转y
-y = data[["weapon_code", "premise_code", "crime_code"]]
+y = data[["status", "weapon_code"]]
+# 将status从不规则的string转化为float
+y.loc[y["status"] == "AA", "status"] = 0
+y.loc[y["status"] == "AO", "status"] = 1
+y.loc[y["status"] == "CC", "status"] = 2
+y.loc[y["status"] == "IC", "status"] = 3
+y.loc[y["status"] == "JA", "status"] = 4
+y.loc[y["status"] == "JO", "status"] = 5
+# 将status设置为离散值
+y = y.astype(int)
 
 # y = y.drop(["specific_time"], axis=1)
 
