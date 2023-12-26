@@ -1,7 +1,10 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+
+
+# %config InlineBackend.figure_format = 'retina'
 
 # import data
 data = pd.read_csv("temp.csv")
@@ -16,8 +19,8 @@ X = data[
         "victim_age",
         "victim_sex",
         "victim_descent",
-        # "latitude",
-        # "longitude",
+        "latitude",
+        "longitude",
         "premise_code",
     ]
 ]
@@ -29,12 +32,12 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-# 创建和训练 KNeighborsClassifier 模型
-knn_classifier = KNeighborsClassifier(n_neighbors=5)
-knn_classifier.fit(X_train, y_train)
+# 创建和训练 Support Vector Classifier (SVC) 模型
+svc_classifier = SVC(kernel="linear", C=1.0, random_state=42)
+svc_classifier.fit(X_train, y_train)
 
 # 在测试集上进行预测
-y_pred = knn_classifier.predict(X_test)
+y_pred = svc_classifier.predict(X_test)
 
 # 计算准确性
 accuracy = accuracy_score(y_test, y_pred)

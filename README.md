@@ -89,18 +89,69 @@ X = data[
 ]
 # "crime_code", "premise_code", "weapon_code"
 y = data["weapon_code"]
-
 ```
 
-|            | cirme_code | premise_code | weapon_code |
-| ---------- | ---------- | ------------ | ----------- |
-| knn        | 0.21       | 0.27         | 0.63        |
-| 朴素贝叶斯 | 0.02       | 0.04         | 0.23        |
-| 决策树     | 0.20       | 0.29         | 0.54        |
-| 链         | 0.20       | 0.27         | 0.54        |
-|            |            |              |             |
+|            | crime_code | premise_code | weapon_code    |
+| ---------- | ---------- | ------------ | -------------- |
+| knn        | 0.21       | 0.27         | 0.63           |
+| 朴素贝叶斯 | 0.02       | 0.04         | 0.23           |
+| 决策树     | 0.20       | 0.29         | 0.54           |
+| 链         | 0.20       | 0.27         | 0.54           |
+| svm        |            |              | 0.73（2w数据） |
 
+```python
+X = data[
+    [
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "area",
+        "victim_age",
+        "victim_sex",
+        "victim_descent",
+        "latitude",
+        "longitude",
+        "premise_code",
+    ]
+]
+# "crime_code", "weapon_code"
+y = data["crime_code"]
+```
 
+|      | crime_code | weapon_code |
+| ---- | ---------- | ----------- |
+| knn  | 0.27       | 0.65        |
+|      |            |             |
+|      |            |             |
+|      |            |             |
+|      |            |             |
+
+```python
+X = data[
+    [
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "area",
+        "victim_age",
+        "victim_sex",
+        "victim_descent",
+        "premise_code",
+    ]
+]
+# "crime_code", "weapon_code"
+y = data["crime_code"]
+```
+
+|      | crime_code | weapon_code |
+| ---- | ---------- | ----------- |
+| knn  | 0.27       | 0.65        |
+|      |            |             |
+|      |            |             |
+|      |            |             |
+|      |            |             |
 
 ## 参与贡献
 
