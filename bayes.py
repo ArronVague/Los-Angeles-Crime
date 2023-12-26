@@ -1,9 +1,23 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import plotly.express as px
+import plotly.graph_objects as go
+import nbformat
+from plotly.subplots import make_subplots
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.multioutput import ClassifierChain
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, mean_squared_error
 from sklearn.preprocessing import LabelEncoder
+import tensorflow as tf
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+
 
 # %config InlineBackend.figure_format = 'retina'
 
@@ -12,7 +26,7 @@ data = pd.read_csv("Crime_Data_from_2020_to_Present.csv")
 
 # 取前3000行
 # 3000时准确率为0.25，用到的行只有38
-# data = data[:2000]
+# data = data[:20000]
 
 # 除了这些列，其他列都删除
 # "date_occurred",
@@ -126,6 +140,7 @@ X = data[
         "longitude",
     ]
 ]
+
 # "crime_code", "premise_code", "weapon_code"
 y = data["weapon_code"]
 # print(y)
@@ -135,12 +150,12 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-# 创建和训练 DecisionTreeClassifier 模型
-dt_classifier = DecisionTreeClassifier(random_state=42)
-dt_classifier.fit(X_train, y_train)
+# 创建和训练 Gaussian Naive Bayes 模型
+nb_classifier = GaussianNB()
+nb_classifier.fit(X_train, y_train)
 
 # 在测试集上进行预测
-y_pred = dt_classifier.predict(X_test)
+y_pred = nb_classifier.predict(X_test)
 
 # 计算准确性
 accuracy = accuracy_score(y_test, y_pred)
