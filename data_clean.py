@@ -43,7 +43,7 @@ data.drop(
         "modus_operandi",
         "premise_description",
         "weapon_description",
-        "status",
+        # "status",
         "status_description",
         "crime_code_1",
         "crime_code_2",
