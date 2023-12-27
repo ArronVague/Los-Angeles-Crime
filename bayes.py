@@ -23,7 +23,7 @@ X = data[
 ]
 
 # "weapon_code", "status"
-y = data["status"]
+y = data["weapon_code"]
 # print(y)
 
 # 划分训练集和测试集

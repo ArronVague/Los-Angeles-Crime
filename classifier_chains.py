@@ -23,7 +23,7 @@ X = data[
 ]
 # y = data[["crime_code", "premise_code", "weapon_code"]]
 # 反转y
-y = data[["status", "weapon_code"]]
+y = data[["weapon_code", "status"]]
 # 将status从不规则的string转化为float
 y.loc[y["status"] == "AA", "status"] = 0
 y.loc[y["status"] == "AO", "status"] = 1

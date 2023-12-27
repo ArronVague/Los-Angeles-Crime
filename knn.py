@@ -21,9 +21,9 @@ X = data[
         "premise_code",
     ]
 ]
-# "crime_code", "weapon_code", "status"
+# "weapon_code", "status"
 # crime_code的准确率实在是太低了，所以就不用了
-y = data["status"]
+y = data["crime_code"]
 
 # 划分训练集和测试集
 X_train, X_test, y_train, y_test = train_test_split(

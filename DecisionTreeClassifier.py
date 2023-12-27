@@ -24,7 +24,7 @@ X = data[
     ]
 ]
 #  "weapon_code", "status"
-y = data["status"]
+y = data["weapon_code"]
 
 # 划分训练集和测试集
 X_train, X_test, y_train, y_test = train_test_split(
