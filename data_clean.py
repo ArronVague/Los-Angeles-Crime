@@ -56,7 +56,7 @@ data.drop(
     inplace=True,
 )
 
-# data.dropna(inplace=True)
+data.dropna(inplace=True)
 
 print("Number of rows after removing missing values:", data.shape[0])
 
