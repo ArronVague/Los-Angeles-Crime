@@ -58,8 +58,6 @@ data.drop(
 
 data.dropna(inplace=True)
 
-print("Number of rows after removing missing values:", data.shape[0])
-
 
 # 提取需要用到的数据：
 # 返回三个DataFrame数据集：有用的数据（包括特征列、标签列以及全称（如犯罪描述列））、特征、标签
@@ -102,6 +100,10 @@ data["victim_age"].fillna(mean_age, inplace=True)
 le = LabelEncoder()
 data["victim_sex"] = le.fit_transform(data["victim_sex"])
 data["victim_descent"] = le.fit_transform(data["victim_descent"])
+data["crime_code"] = le.fit_transform(data["crime_code"])
+data["premise_code"] = le.fit_transform(data["premise_code"])
+data["weapon_code"] = le.fit_transform(data["weapon_code"])
+data["status"] = le.fit_transform(data["status"])
 
 data.drop(
     [
@@ -112,6 +114,12 @@ data.drop(
     axis=1,
     inplace=True,
 )
+
+# 删除victim_age中包含0的行
+data = data[data["victim_age"] != 0]
+
+print("Number of rows after removing missing values:", data.shape[0])
+
 
 # 将data写入temp.csv
 data.to_csv("temp.csv")
