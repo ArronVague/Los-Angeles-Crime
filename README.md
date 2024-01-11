@@ -16,6 +16,56 @@ Python 3.9.17
 
 “部门编号”、“报告日期”、“发生日期”、“区域”、“区域名称”、“报告地区”、“部分”、“犯罪代码”、“犯罪描述”、“作案方式”、“受害者年龄”、“受害者性别”、“受害者血统”、"前提代码"、"前提描述"、"武器代码"、"武器描述"、"状态"、"状态描述"、"犯罪代码1"、"犯罪代码2"、"犯罪代码3"、"犯罪代码4"、"位置"、"交叉街道"、"纬度 “，“经度”
 
+## 分工
+
+1. 导包、导入数据集（照旧）
+
+2. clean data
+
+   - 这部分综合algorithms/data_clean.py和你MLTTest中对数据集的处理方式
+
+   - 删除不必要的信息，这几个是一定没有用的（至于这两个删除的顺序，训练结果差别应该不大）
+
+     ```python
+     # 删除没有用的列
+     data.drop(
+         [
+             "division_number",
+             "date_reported",
+             "area_name",
+             "reporting_district",
+             "part",
+             "crime_description",
+             "modus_operandi",
+             "premise_description",
+             "weapon_description",
+             "status_description",
+             "crime_code_1",
+             "crime_code_2",
+             "crime_code_3",
+             "crime_code_4",
+             "cross_street",
+         ],
+         axis=1,
+         inplace=True,
+     )
+     
+     # 删除存在缺失值的行
+     data.dropna(inplace=True)
+     ```
+
+   - 沿用get_usefulData_feature_label中的fill_the_blank，不再使用month_day、specific_time，改用month、day、hour、minute
+
+   - 所有LabelEncoder先不要做（留到我做完数据可视化后再做）
+
+   - 全都放在data中（后续尽量不要修改data，使用copy()，也不用写入.csv文件了）
+
+3. Data Overview（还是我做）
+
+4. 你的算法，再扯皮一下结果
+
+5. 我的算法及汇总
+
 ## 特征
 
 ~~date_occurred 发生日期~~（实际上这个不好编码）
