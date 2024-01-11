@@ -18,11 +18,19 @@ Python 3.9.17
 
 ## 特征
 
-date_occurred 发生日期
+~~date_occurred 发生日期~~（实际上这个不好编码）
 
-- month_day
-  - month
-  - day
+- ~~month_day~~
+  - ~~month~~
+  - ~~day~~
+
+month 月份（由date_occured拆分而来）
+
+day 日期（由date_occured拆分而来）
+
+hour（由date_occured拆分而来）
+
+minute（由date_occured拆分而来）
 
 area (area_name) 地区
 
@@ -38,11 +46,15 @@ longitude 经度坐标
 
 ## 标签
 
-crime_code (crime_descroption) 犯罪描述
+~~specific_time 具体时间（如01:00，由date_occured拆分而来）~~（效果极差）
+
+crime_code (crime_descroption) 犯罪描述（训练效果差）
 
 premise_code (premise_description) 遇害地点（如酒店、夜总会等）
 
-weapon_code (weapon_description) 武器
+weapon_code (weapon_description) 武器（训练效果较好）
+
+status (status_descroption) 案件状态（训练效果好）
 
 ## 没用的特征
 
@@ -56,13 +68,123 @@ weapon_code (weapon_description) 武器
 
 ~~modus_operandi 作案手法~~
 
-status (status_descroption) 案件状态
-
 crime_code_1/2/3/4 犯罪编号
 
 location 详细地址
 
 cross_street 临近街道
+
+## 算法汇总
+
+```python
+X = data[
+    [
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "area",
+        "victim_age",
+        "victim_sex",
+        "victim_descent",
+        "latitude",
+        "longitude",
+    ]
+]
+# "crime_code", "premise_code", "weapon_code"
+y = data["weapon_code"]
+```
+
+|            | crime_code | premise_code | weapon_code    |
+| ---------- | ---------- | ------------ | -------------- |
+| knn        | 0.21       | 0.27         | 0.63           |
+| 朴素贝叶斯 | 0.02       | 0.04         | 0.23           |
+| 决策树     | 0.20       | 0.29         | 0.54           |
+| 链         | 0.20       | 0.27         | 0.54           |
+| svm        |            |              | 0.73（2w数据） |
+
+```python
+X = data[
+    [
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "area",
+        "victim_age",
+        "victim_sex",
+        "victim_descent",
+        "latitude",
+        "longitude",
+        "premise_code",
+    ]
+]
+# "crime_code", "weapon_code"
+y = data["crime_code"]
+```
+
+|           | crime_code | weapon_code |
+| --------- | ---------- | ----------- |
+| knn       | 0.27       | 0.65        |
+| SGD       | 0.17       | 0.38        |
+| LinearSVC |            | 0.65/0.54   |
+|           |            |             |
+|           |            |             |
+
+```python
+X = data[
+    [
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "area",
+        "victim_age",
+        "victim_sex",
+        "victim_descent",
+        "premise_code",
+    ]
+]
+# "crime_code", "weapon_code"
+y = data["crime_code"]
+```
+
+|      | crime_code | weapon_code |
+| ---- | ---------- | ----------- |
+| knn  | 0.27       | 0.65        |
+|      |            |             |
+|      |            |             |
+|      |            |             |
+|      |            |             |
+
+```python
+X = data[
+    [
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "area",
+        "victim_age",
+        "victim_sex",
+        "victim_descent",
+        "latitude",
+        "longitude",
+        "premise_code",
+    ]
+]
+# "weapon_code", "status"
+# crime_code的准确率实在是太低了，所以就不用了
+y = data["status"]
+```
+
+|            | weapon_code                 | status                  |
+| ---------- | --------------------------- | ----------------------- |
+| knn        | 0.65/0.47（删除空值数据后） | 0.76/0.54（删除空值后） |
+| 朴素贝叶斯 | 0.21/0.23                   | 0.12/0.06               |
+| 决策树     | 0.56/0.36                   | 0.68/0.51               |
+| 链         | 0.56/0.36                   | 0.68/0.51               |
+| 逻辑回归   | /0.55                       | /0.60                   |
 
 ## 参与贡献
 
