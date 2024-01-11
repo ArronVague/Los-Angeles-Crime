@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.calibration import LabelEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
@@ -10,6 +11,9 @@ from sklearn.preprocessing import StandardScaler
 
 # import data
 data = pd.read_csv("temp.csv")
+
+# 将victiom_age中包含0的行删除
+data = data[data["victim_age"] != 0]
 
 X = data[
     [
@@ -24,10 +28,14 @@ X = data[
         "latitude",
         "longitude",
         "premise_code",
+        "location",
     ]
 ]
+
+print(X.head())
+
 # "weapon_code", "status"
-y = data["weapon_code"]
+y = data["status"]
 
 # 划分训练集和测试集
 X_train, X_test, y_train, y_test = train_test_split(
