@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 
 # import data
-data = pd.read_csv("Crime_Data_from_2020_to_Present.csv")
+data = pd.read_csv("../Crime_Data_from_2020_to_Present.csv")
 
 # 除了这些列，其他列都删除
 # "date_occurred",
@@ -49,7 +49,7 @@ data.drop(
         "crime_code_2",
         "crime_code_3",
         "crime_code_4",
-        "location",
+        # "location",
         "cross_street",
     ],
     axis=1,
@@ -104,6 +104,7 @@ data["crime_code"] = le.fit_transform(data["crime_code"])
 data["premise_code"] = le.fit_transform(data["premise_code"])
 data["weapon_code"] = le.fit_transform(data["weapon_code"])
 data["status"] = le.fit_transform(data["status"])
+data["location"] = le.fit_transform(data["location"])
 
 data.drop(
     [
