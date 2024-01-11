@@ -166,3 +166,4 @@ cython_debug/
 *.fls
 *.log
 *.pdf
+*.out
