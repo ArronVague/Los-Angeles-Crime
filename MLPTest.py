@@ -70,6 +70,9 @@ def get_usefulData_feature_label(data):
     mapping_descent = {index: label for index, label in enumerate(le.classes_)}
 
     feature_label["weapon_code"] = le.fit_transform(feature_label["weapon_code"])
+    mapping_weapon = {index: label for index, label in enumerate(le.classes_)}
+
+    print("lenmmmmmm",feature_label["weapon_code"].unique())
 
     if check(feature_label):
         feature = feature_label[
@@ -85,7 +88,7 @@ def get_usefulData_feature_label(data):
             ]
         ].copy()
         
-        label = feature_label["hour"].copy()  # , "hour", "crime_code", "premise_code", "weapon_code"
+        label = feature_label["weapon_code"].copy()  # , "hour", "crime_code", "premise_code", "weapon_code"
         print(len(feature),len(feature) == len(label))
         return feature, label
     
@@ -149,8 +152,8 @@ class ImprovedMLP(nn.Module):
 
 # 创建 MLP 模型实例
 input_dim = 8  # 输入维度
-hidden_dims = [16, 12, 12, 16]
-output_dim = 24  # 输出维度
+hidden_dims = [16, 32, 64, 64]
+output_dim = 79  # 输出维度
 learn_rate = 0.01
 dropout_rate = 0.2
 model = ImprovedMLP(input_dim, hidden_dims, output_dim,dropout_rate)
