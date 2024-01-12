@@ -64,7 +64,7 @@ Python 3.9.17
 
 4. [@Why-unable](https://github.com/Why-unable)的算法，再扯皮一下结果
 
-5. [@ArronVague](https://github.com/ArronVague)我的算法及汇总
+5. [@ArronVague](https://github.com/ArronVague)的算法及汇总
 
 ## 特征选择
 
@@ -136,8 +136,6 @@ cross_street 临近街道
 5. publish branch到仓库
 6. 创建pull request
 7. 经审核人员审核后merge到main branch
-
-忽略中英文表达 :triumph: 。
 
 ## 贡献者
 
