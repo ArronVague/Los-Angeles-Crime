@@ -7,101 +7,70 @@ from torch.utils.data import TensorDataset, DataLoader
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
-data = pd.read_csv("Crime_Data_from_2020_to_Present.csv")
+data_1 = pd.read_csv("tmp_data.csv")
 
-def get_usefulData_feature_label(data):
-    # 用字符串"Unknown"代替object类型的列中的缺失值，-1代替float、int.
-    def fill_the_blank(data):
-        for column in data.columns:
-            if data[column].dtype == "object":
-                data[column].fillna("Unknown", inplace=True)
-            elif data[column].dtype in ["float64", "int64"]:
-                data[column].fillna(-1, inplace=True)
+# # Convert date columns to datetime
+# data["date_occurred"] = pd.to_datetime(data["date_occurred"])
+# # 由于"date_occurred"列没有缺失值，直接操作：
+# data["month"] = data["date_occurred"].dt.strftime("%m").astype(float)
+# data["day"] = data["date_occurred"].dt.strftime("%d").astype(float)
+# data["hour"] = data["date_occurred"].dt.strftime("%H").astype(float)
 
-    # 检查数据中是否还有空值
-    def check(data):
-        return data.isnull().sum().sum() == 0
-    
-    # 删除空数据行
-    def delete_blank_line(data):
-        data = data.dropna()
-        return data 
+# # 删除没有用的列
+# data.drop(
+#     [
+#         "date_occurred",
+#         "division_number",
+#         "date_reported",
+#         "area_name",
+#         "reporting_district",
+#         "part",
+#         "crime_description",
+#         "modus_operandi",
+#         "premise_description",
+#         "weapon_description",
+#         "status_description",
+#         "crime_code_1",
+#         "crime_code_2",
+#         "crime_code_3",
+#         "crime_code_4",
+#         "cross_street",
+#     ],
+#     axis=1,
+#     inplace=True,
+# )
 
+# # 删除存在缺失值的行
+# data.dropna(inplace=True)
 
+# print("Number of rows after removing missing values:", data.shape[0])
 
-    # Convert date columns to datetime
-    data["date_occurred"] = pd.to_datetime(data["date_occurred"])
-    data["month_day"] = data["date_occurred"].dt.strftime("%m-%d")  # 月日
-    data["specific_time"] = data["date_occurred"].dt.strftime("%H:%M:%S")  # 时分秒
-    # 由于"date_occurred"列没有缺失值，直接操作：
-    data["month"] = data["date_occurred"].dt.strftime("%m").astype(float)
-    data["day"] = data["date_occurred"].dt.strftime("%d").astype(float)
-    data["hour"] = data["date_occurred"].dt.strftime("%H").astype(float)
-    
+# data.to_csv("tmp_data.csv")
 
+le = LabelEncoder()
+data_1["victim_sex"] = le.fit_transform(data_1["victim_sex"])
+mapping_sex = {index: label for index, label in enumerate(le.classes_)}
 
-    # 1、提取相应列
-    feature_label = data[
-        [
-            "month",
-            "day",
-            "area",
-            "victim_age",
-            "victim_sex",
-            "victim_descent",
-            "latitude",
-            "longitude",
-            "hour",
-            "crime_code", 
-            "premise_code", 
-            "weapon_code",
-        ]
-    ].copy()
+data_1["victim_descent"] = le.fit_transform(data_1["victim_descent"])
+mapping_descent = {index: label for index, label in enumerate(le.classes_)}
 
-    print(len(feature_label))
-    feature_label = delete_blank_line(feature_label)
-    print(len(feature_label))
+data_1["weapon_code"] = le.fit_transform(data_1["weapon_code"])
+mapping_weapon = {index: label for index, label in enumerate(le.classes_)}
 
-    le = LabelEncoder()
-    feature_label["victim_sex"] = le.fit_transform(feature_label["victim_sex"])
-    mapping_sex = {index: label for index, label in enumerate(le.classes_)}
-    
-    feature_label["victim_descent"] = le.fit_transform(feature_label["victim_descent"])
-    mapping_descent = {index: label for index, label in enumerate(le.classes_)}
+data_1["premise_code"] = le.fit_transform(data_1["premise_code"])
+mapping_premise_code = {index: label for index, label in enumerate(le.classes_)}
 
-    feature_label["weapon_code"] = le.fit_transform(feature_label["weapon_code"])
-    mapping_weapon = {index: label for index, label in enumerate(le.classes_)}
+data_1["crime_code"] = le.fit_transform(data_1["crime_code"])
+mapping_crime_code = {index: label for index, label in enumerate(le.classes_)}
 
-    print("lenmmmmmm",feature_label["weapon_code"].unique())
+data_1["status"] = le.fit_transform(data_1["status"])
+mapping_status = {index: label for index, label in enumerate(le.classes_)}
 
-    if check(feature_label):
-        feature = feature_label[
-            [
-                "month",
-                "day",
-                "area",
-                "victim_age",
-                "victim_sex",
-                "victim_descent",
-                "latitude",
-                "longitude",
-            ]
-        ].copy()
-        
-        label = feature_label["weapon_code"].copy()  # , "hour", "crime_code", "premise_code", "weapon_code"
-        print(len(feature),len(feature) == len(label))
-        return feature, label
-    
-
-    raise ValueError("Some values are not valid.")
+# print("lenmmmmmm",data["weapon_code"].unique())
 
 
-feature, label = get_usefulData_feature_label(data)
-print(feature.head())
-print(feature["month"].dtype)
-print(feature["victim_sex"].dtype)
-print(label.head())
-
+def check(data):
+    return data.isnull().sum().sum() == 0
 
 
 # 进一步处理
@@ -119,7 +88,30 @@ def get_train_test_dataset(df_feature,df_label):
 
     # return features_train[:80000], features_test[:20000], labels_train[:80000], labels_test[:20000]
     return features_train, features_test, labels_train, labels_test
+
+
+
+feature=[]
+label=[]
+if check(data_1):
+    feature = data_1[
+        [
+            "month",
+            "day",
+            "area",
+            "victim_age",
+            "victim_sex",
+            "victim_descent",
+            "latitude",
+            "longitude",
+        ]
+    ].copy()
+    
+    label = data_1["status"].copy()  # , "hour", "crime_code", "premise_code", "weapon_code", "status"
+
+
 features_train, features_test, labels_train, labels_test = get_train_test_dataset(feature,label)
+
 
 
 
@@ -152,8 +144,23 @@ class ImprovedMLP(nn.Module):
 
 # 创建 MLP 模型实例
 input_dim = 8  # 输入维度
-hidden_dims = [16, 32, 64, 64]
-output_dim = 79  # 输出维度
+
+# # weapon_code
+# hidden_dims = [16, 32, 64, 64]
+# output_dim = 79  # 输出维度
+
+# # premise_code
+# hidden_dims = [16, 32, 64, 128, 256]
+# output_dim = 305  # 输出维度
+
+# # crime_code
+# hidden_dims = [16, 32, 64, 128]
+# output_dim = 138  # 输出维度
+
+# status
+hidden_dims = [12, 16, 12, 8]
+output_dim = 6  # 输出维度
+
 learn_rate = 0.01
 dropout_rate = 0.2
 model = ImprovedMLP(input_dim, hidden_dims, output_dim,dropout_rate)
@@ -162,7 +169,6 @@ model = ImprovedMLP(input_dim, hidden_dims, output_dim,dropout_rate)
 criterion = nn.CrossEntropyLoss()
 # optimizer = torch.optim.Adam(model.parameters(),lr=lr)
 optimizer = torch.optim.SGD(model.parameters(), lr=learn_rate)
-print(model.parameters)
 
 # 打印模型结构
 # print(model)
@@ -175,7 +181,6 @@ train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True
 test_dataset = TensorDataset(features_test, labels_test)
 test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-print(labels_train[0])
 
 # 训练循环
 num_epochs = 2000 # 训练迭代次数
@@ -195,21 +200,8 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
         # total_loss += loss.item() 
-        # 打印参数梯度
-
-    # for name, param in model.named_parameters():
-    #     if param.grad is not None:
-    #         print(f'Parameter: {name}, Gradient norm: {torch.norm(param.grad)}')
-
-    # # 打印参数值
-    # for name, param in model.named_parameters():
-    #     print(f'Parameter: {name}, Value: {param.data}')
 
     train_loss = total_loss / len(train_dataloader)
-
-    # if epoch in(10,20,30):
-    #     print(model.parameters)
-
 
     model.eval()
     total_loss = 0
@@ -225,12 +217,9 @@ for epoch in range(num_epochs):
         total_loss += loss.item()
         _, predicted = torch.max(logits, dim=1)
 
-
-
         # print(len(predicted))
         correct += (predicted == labels).sum().item()
         total += labels.size(0)
-
 
 
     # 计算平均损失和准确率
@@ -238,14 +227,6 @@ for epoch in range(num_epochs):
     test_accuracy = correct / total
 
     # 打印训练过程中的损失
-    # print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item()}")
     if epoch%60 == 1:
         print(f"Epoch {epoch+1}/{num_epochs} - Loss: {train_loss} - TestLoss: {test_loss:.4f} - Accuracy: {test_accuracy:.2f}")
     
-    
-        # if epoch == 20:
-        #     print(_,predicted)
-
-        # if epoch ==40:
-        #     print(_,predicted)
-        #     break
