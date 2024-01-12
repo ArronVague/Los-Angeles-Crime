@@ -98,13 +98,21 @@ mean_age = data["victim_age"].replace({0: None, np.nan: None}).mean()
 data["victim_age"].fillna(mean_age, inplace=True)
 
 le = LabelEncoder()
-data["victim_sex"] = le.fit_transform(data["victim_sex"])
-data["victim_descent"] = le.fit_transform(data["victim_descent"])
-data["crime_code"] = le.fit_transform(data["crime_code"])
-data["premise_code"] = le.fit_transform(data["premise_code"])
-data["weapon_code"] = le.fit_transform(data["weapon_code"])
-data["status"] = le.fit_transform(data["status"])
-data["location"] = le.fit_transform(data["location"])
+data["victim_sex_enc"] = le.fit_transform(data["victim_sex"])
+data["victim_descent_enc"] = le.fit_transform(data["victim_descent"])
+data["crime_code_enc"] = le.fit_transform(data["crime_code"])
+data["premise_code_enc"] = le.fit_transform(data["premise_code"])
+data["weapon_code_enc"] = le.fit_transform(data["weapon_code"])
+data["status_enc"] = le.fit_transform(data["status"])
+data["location_enc"] = le.fit_transform(data["location"])
+
+# data["victim_sex"] = le.inverse_transform(data["victim_descent_enc"])
+# data["victim_descent"] = le.inverse_transform(data["victim_descent_enc"])
+# data["crime_code"] = le.inverse_transform(data["crime_code_enc"])
+# data["premise_code"] = le.inverse_transform(data["premise_code_enc"])
+# data["weapon_code"] = le.inverse_transform(data["weapon_code_enc"])
+# data["status"] = le.inverse_transform(data["status_enc"])
+# data["location"] = le.inverse_transform(data["location_enc"])
 
 data.drop(
     [
