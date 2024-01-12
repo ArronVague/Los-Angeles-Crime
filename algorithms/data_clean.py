@@ -94,8 +94,13 @@ data["hour"] = data["date_occurred"].dt.hour
 data["minute"] = data["date_occurred"].dt.minute
 
 # 用NaN替换无效的年龄（0和负数）
-mean_age = data["victim_age"].replace({0: None, np.nan: None}).mean()
-data["victim_age"].fillna(mean_age, inplace=True)
+# mean_age = data["victim_age"].replace({0: None, np.nan: None}).mean()
+# data["victim_age"].fillna(mean_age, inplace=True)
+
+valid_age_values = data[data["victim_age"] > 0]["victim_age"].values
+data["victim_age"] = data["victim_age"].apply(
+    lambda x: np.random.choice(valid_age_values) if x <= 0 else x
+)
 
 le = LabelEncoder()
 data["victim_sex_enc"] = le.fit_transform(data["victim_sex"])
@@ -105,14 +110,6 @@ data["premise_code_enc"] = le.fit_transform(data["premise_code"])
 data["weapon_code_enc"] = le.fit_transform(data["weapon_code"])
 data["status_enc"] = le.fit_transform(data["status"])
 data["location_enc"] = le.fit_transform(data["location"])
-
-# data["victim_sex"] = le.inverse_transform(data["victim_descent_enc"])
-# data["victim_descent"] = le.inverse_transform(data["victim_descent_enc"])
-# data["crime_code"] = le.inverse_transform(data["crime_code_enc"])
-# data["premise_code"] = le.inverse_transform(data["premise_code_enc"])
-# data["weapon_code"] = le.inverse_transform(data["weapon_code_enc"])
-# data["status"] = le.inverse_transform(data["status_enc"])
-# data["location"] = le.inverse_transform(data["location_enc"])
 
 data.drop(
     [

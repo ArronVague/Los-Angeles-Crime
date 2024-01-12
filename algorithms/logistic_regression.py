@@ -14,7 +14,7 @@ import numpy as np
 data = pd.read_csv("temp.csv")
 
 # 将victiom_age中包含0的行删除
-data = data[data["victim_age"] != 0]
+# data = data[data["victim_age"] != 0]
 
 X = data[
     [
@@ -28,10 +28,10 @@ X = data[
         "victim_descent_enc",
         "latitude",
         "longitude",
-        "premise_code_enc",
-        "location_enc",
-        "weapon_code_enc",
-        "crime_code_enc",
+        # "premise_code_enc",
+        # "location_enc",
+        # "weapon_code_enc",
+        # "crime_code_enc",
     ]
 ]
 
@@ -40,7 +40,7 @@ print(X.head())
 # crime_code犯罪类型的预测效果不好。
 # 尝试将犯罪类型和武器都加入到特征中，将status作为标签
 # "weapon_code", "status"
-y = data["status_enc"]
+y = data["weapon_code_enc"]
 
 
 # 划分训练集和测试集
