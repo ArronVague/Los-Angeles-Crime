@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{booktabs}
 \usepackage[UTF8]{ctex}
 \usepackage{enumitem}
 \usepackage{graphicx}
@@ -20,7 +21,7 @@
 \renewcommand{\abstractname}{摘要}  % 更改摘要名称
 
 \begin{abstract}
-    本实验旨在通过机器学习方法对洛杉矶的犯罪情况进行预测。我们使用了洛杉矶市历史犯罪数据集（2020-2023），并采用了一种xx算法（例如决策树、随机森林或神经网络）来构建预测模型。我们将数据集划分为训练集和测试集，通过评估模型在测试集上的性能来验证预测模型的准确性。本实验的初衷是为亲爱的洛杉矶居民提供一个赛博算命的方法，预测此时此刻可能会在什么地方遇害，然而训练效果欠佳。
+    本实验旨在通过机器学习方法对洛杉矶的犯罪情况进行预测。我们使用了洛杉矶市历史犯罪数据集（2020-2023），并采用了多种算法（例如逻辑回归、多层感知机和决策树等）来构建预测模型。我们将数据集划分为训练集和测试集，通过评估模型在测试集上的性能来验证预测模型的准确性。本实验的初衷是为亲爱的洛杉矶居民提供一个赛博算命的方法，根据此时此刻的环境信息（月份、日期、小时、分钟、地区、年龄、性别、种族、经纬度）来预测未来可能遭遇的犯罪类型、武器类型、犯罪地点以及案件状态，以便居民采取相应的措施来保护自身安全。
 \end{abstract}
 
 \section{引言}
@@ -105,25 +106,78 @@
 \end{figure}
 
 \section{模型构建与训练}
-我们采用了一种监督学习算法来构建预测模型。在这个实验中，我们选择了逻辑回归作为我们的基础模型。逻辑回归是一种简单而强大的回归算法，可以根据特征的值进行预测，并生成一个逻辑方程来表示预测过程。我们还尝试了其他算法，如决策树和神经网络，以比较它们的性能。
+我们采用了多种算法来构建预测模型。在这个实验中，我们选择了逻辑回归作为我们的基础模型。逻辑回归是一种简单而强大的回归算法，可以根据特征的值进行预测，并生成一个逻辑方程来表示预测过程。我们还尝试了其他算法，如多层感知机、决策树和朴素贝叶斯等，以比较它们的性能（表\ref{tab:Performance}）。
 
-我们将数据集划分为训练集和测试集，采用70\%的数据作为训练集，30\%的数据作为测试集。然后，我们使用训练集来训练模型，并通过测试集评估模型的性能。我们使用一些评估指标，如准确率、精确率、召回率和F1分数，来衡量模型的性能。
+我们将数据集划分为训练集和测试集，采用80\%的数据作为训练集，20\%的数据作为测试集。然后，我们使用训练集来训练模型，并通过测试集评估模型的性能。衡量模式性能的指标为准确率（accuracy）。
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+                            & crime\textunderscore{}code & premise\textunderscore{}code & weapon\textunderscore{}code & status \\
+        \hline
+        Logistic Regression & 0.28                       & 0.27                         & 0.54                        & 0.61   \\
+        \hline
+        MLP                 & 0.28                       & 0.27                         & 0.54                        & 0.61   \\
+        \hline
+        k-NN                & 0.22                       & 0.22                         & 0.47                        & 0.51   \\
+        \hline
+        Naive Bayes         & 0.03                       & 0.02                         & 0.04                        & 0.23   \\
+        \hline
+        Decision Tree       & 0.19                       & 0.26                         & 0.35                        & 0.48   \\
+        \hline
+        Classifier Chain    & 0.19                       & 0.26                         & 0.35                        & 0.48   \\
+        \hline
+    \end{tabular}
+    \caption{Performance of different algorithms}
+    \label{tab:Performance}
+\end{table}
 
 \section{实验结果与讨论}
+在我们的实验中，Logistic Regression模型和MLP模型表现出较好的性能。在测试集上，我们获得了约54\%的武器类型准确率（表\ref{tab:classification_report_weapon}）以及60\%的案件状态准确率（表\ref{tab:classification_report_status}）。对于weapon\textunderscore{}code来说，Logistic Regression模型在类别61\footnote{武器类型61：STRONG-ARM (HANDS, FIST, FEET OR BODILY FORCE)}上表现较好；对于status来说，Logistic Regression模型在类别3\footnote{案件状态3：Invest Cont}上表现较好。
 
-weapon\textunderscore{}code最好是400，其它没有参考价值。且总准确率为55
-status最好是3，其它没有参考价值。且总准确率为60
+除此之外，crime\textunderscore{}code和premise\textunderscore{}code无论用什么算法训练，准确率都很低，说明这两个标签与选择的特征关系不大。
 
-在我们的实验中，逻辑回归模型表现出较好的性能。在测试集上，我们获得了约60\%的准确率。这意味着我们的模型可以正确地预测60\%的犯罪事件。此外，我们还计算了其他评估指标，如精确率、召回率和F1分数，以对模型的性能进行更详细的分析。
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cccccccc}
+        \toprule
+        Class & Precision & Recall & F1-Score & Support \\
+        \midrule
+        0     & 0.00      & 0.00   & 0.00     & 212     \\
+        1     & 0.00      & 0.00   & 0.00     & 3654    \\
+              &           & \dots  &          &         \\
+        61    & 0.54      & 1.00   & 0.70     & 31865   \\
+              &           & \dots  &          &         \\
+        77    & 0.00      & 0.00   & 0.00     & 167     \\
+        78    & 0.00      & 0.00   & 0.00     & 6       \\
+        \bottomrule
+    \end{tabular}
+    \caption{Logistic Regression Classification Report on Weapon Code}
+    \label{tab:classification_report_weapon}
+\end{table}
 
-通过分析模型的预测结果，我们可以发现一些有趣的趋势和模式。例如，某些地区在特定时间段更容易发生特定类型的犯罪。这些信息对于执法机构在资源分配和犯罪预防方面具有重要意义。
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cccccccc}
+        \toprule
+        Class & Precision & Recall & F1-Score & Support \\
+        \midrule
+        0     & 0.00      & 0.00   & 0.00     & 9625    \\
+        1     & 0.39      & 0.00   & 0.00     & 13155   \\
+        3     & 0.61      & 1.00   & 0.75     & 35894   \\
+        4     & 0.00      & 0.00   & 0.00     & 435     \\
+        5     & 0.00      & 0.00   & 0.00     & 214     \\
+        \bottomrule
+    \end{tabular}
+    \caption{Logistic Regression Classification Report on Status}
+    \label{tab:classification_report_status}
+\end{table}
 
 \section{结论与展望}
-在本实验中，我们构建了一个预测洛杉矶犯罪情况的模型，并对其性能进行了评估。我们的实验结果表明，使用机器学习方法可以有效地预测犯罪事件，并为执法机构提供有价值的信息，以制定更好的犯罪打击策略。
+在本实验中，我们构建了一个预测洛杉矶犯罪情况的模型，并对其性能进行了评估。我们的实验结果虽然不是很理想，但是我们还是可以从中得到一些有用的信息。首先，我们发现犯罪事件的时间和空间分布具有一定的规律性，例如犯罪事件在夏季和秋季较多，而在冬季较少；犯罪事件在下午和晚上较多，而在凌晨较少。其次，我们发现犯罪事件的描述、使用的武器、犯罪发生的地点以及犯罪事件的状态也具有一定的规律性，例如最常见的犯罪地点是“STREET”（街道），其次是“SINGLE FAMILY DWELLING”（单户住宅）；最常见的案件状态是“Invest Cont”（调查中），其次是“Adult Other”（成年人案件且未被逮捕）。
 
-然而，我们也意识到在这个领域还有许多挑战和改进的空间。例如，我们可以进一步改进特征选择的方法，尝试更多的机器学习算法，并使用更大规模的数据集进行实验。此外，我们还可以考虑引入其他因素，如天气、社会经济因素等，来提高预测模型的准确性。
-
-总之，本实验为洛杉矶的犯罪预测提供了一个有希望的方法，并为未来的研究和应用提供了一些启示。通过不断改进和优化预测模型，我们可以为城市的安全和公共安全做出更大的贡献。
+而对于武器类型的预测中，STRONG-ARM (HANDS, FIST, FEET OR BODILY FORCE)的性能最好；对于案件状态的预测中，Invest Cont的性能最好。这说明我们的模型对于某些特定的武器类型和案件状态具有较好的预测能力。
 
 % 参考文献
 \begin{thebibliography}{99}

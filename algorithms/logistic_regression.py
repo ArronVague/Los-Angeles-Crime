@@ -39,8 +39,8 @@ print(X.head())
 
 # crime_code犯罪类型的预测效果不好。
 # 尝试将犯罪类型和武器都加入到特征中，将status作为标签
-# "weapon_code", "status"
-y = data["weapon_code_enc"]
+# "crime_code_enc", "premise_code_enc", "weapon_code_enc", "status_enc"
+y = data["status_enc"]
 
 
 # 划分训练集和测试集

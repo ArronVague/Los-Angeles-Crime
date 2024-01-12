@@ -14,25 +14,26 @@ X = data[
         "minute",
         "area",
         "victim_age",
-        "victim_sex",
-        "victim_descent",
+        "victim_sex_enc",
+        "victim_descent_enc",
         "latitude",
         "longitude",
-        "premise_code",
+        # "premise_code_enc",
+        # "location_enc",
+        # "weapon_code_enc",
+        # "crime_code_enc",
     ]
 ]
-# y = data[["crime_code", "premise_code", "weapon_code"]]
+
+# print(X.head())
+
+# crime_code犯罪类型的预测效果不好。
+# 尝试将犯罪类型和武器都加入到特征中，将status作为标签
+# "crime_code_enc", "premise_code_enc", "weapon_code_enc", "status_enc"
+# y = data["status_enc"]
+# y = data[["crime_code_enc", "premise_code_enc", "weapon_code_enc", "status_enc"]]
 # 反转y
-y = data[["weapon_code", "status"]]
-# 将status从不规则的string转化为float
-y.loc[y["status"] == "AA", "status"] = 0
-y.loc[y["status"] == "AO", "status"] = 1
-y.loc[y["status"] == "CC", "status"] = 2
-y.loc[y["status"] == "IC", "status"] = 3
-y.loc[y["status"] == "JA", "status"] = 4
-y.loc[y["status"] == "JO", "status"] = 5
-# 将status设置为离散值
-y = y.astype(int)
+y = data[["status_enc", "weapon_code_enc", "premise_code_enc", "crime_code_enc"]]
 
 # y = y.drop(["specific_time"], axis=1)
 
