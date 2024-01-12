@@ -69,6 +69,8 @@ def get_usefulData_feature_label(data):
     feature_label["victim_descent"] = le.fit_transform(feature_label["victim_descent"])
     mapping_descent = {index: label for index, label in enumerate(le.classes_)}
 
+    feature_label["weapon_code"] = le.fit_transform(feature_label["weapon_code"])
+
     if check(feature_label):
         feature = feature_label[
             [
