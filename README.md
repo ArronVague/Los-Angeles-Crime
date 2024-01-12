@@ -56,23 +56,17 @@ Python 3.9.17
 
    - 沿用get_usefulData_feature_label中的fill_the_blank，不再使用month_day、specific_time，改用month、day、hour、minute
 
-   - 所有LabelEncoder先不要做（留到我做完数据可视化后再做）
+   - 所有LabelEncoder先不要做（留到[@Why-unable](https://github.com/Why-unable)做完数据可视化后再做）
 
    - 全都放在data中（后续尽量不要修改data，使用copy()，也不用写入.csv文件了）
 
-3. Data Overview（还是我做）
+3. Data Overview（还是[@ArronVague](https://github.com/ArronVague)做）
 
-4. 你的算法，再扯皮一下结果
+4. [@Why-unable](https://github.com/Why-unable)的算法，再扯皮一下结果
 
-5. 我的算法及汇总
+5. [@ArronVague](https://github.com/ArronVague)我的算法及汇总
 
-## 特征
-
-~~date_occurred 发生日期~~（实际上这个不好编码）
-
-- ~~month_day~~
-  - ~~month~~
-  - ~~day~~
+## 特征选择
 
 month 月份（由date_occured拆分而来）
 
@@ -95,8 +89,6 @@ latitude 纬度坐标
 longitude 经度坐标
 
 ## 标签
-
-~~specific_time 具体时间（如01:00，由date_occured拆分而来）~~（效果极差）
 
 crime_code (crime_descroption) 犯罪描述（训练效果差）
 
@@ -124,117 +116,16 @@ location 详细地址
 
 cross_street 临近街道
 
-## 算法汇总
+## 算法性能汇总
 
-```python
-X = data[
-    [
-        "month",
-        "day",
-        "hour",
-        "minute",
-        "area",
-        "victim_age",
-        "victim_sex",
-        "victim_descent",
-        "latitude",
-        "longitude",
-    ]
-]
-# "crime_code", "premise_code", "weapon_code"
-y = data["weapon_code"]
-```
-
-|            | crime_code | premise_code | weapon_code    | status |
-| ---------- | ---------- | ------------ | -------------- | ------ |
-| knn        | 0.22       | 0.22         | 0.47           | 0.51   |
-| 朴素贝叶斯 | 0.03       | 0.02         | 0.04           | 0.23   |
-| 决策树     | 0.19       | 0.26         | 0.35           | 0.48   |
-| 链         | 0.20       | 0.27         | 0.54           |        |
-| svm        |            |              | 0.73（2w数据） |        |
-
-```python
-X = data[
-    [
-        "month",
-        "day",
-        "hour",
-        "minute",
-        "area",
-        "victim_age",
-        "victim_sex",
-        "victim_descent",
-        "latitude",
-        "longitude",
-        "premise_code",
-    ]
-]
-# "crime_code", "weapon_code"
-y = data["crime_code"]
-```
-
-|           | crime_code | weapon_code |
-| --------- | ---------- | ----------- |
-| knn       | 0.27       | 0.65        |
-| SGD       | 0.17       | 0.38        |
-| LinearSVC |            | 0.65/0.54   |
-|           |            |             |
-|           |            |             |
-
-```python
-X = data[
-    [
-        "month",
-        "day",
-        "hour",
-        "minute",
-        "area",
-        "victim_age",
-        "victim_sex",
-        "victim_descent",
-        "premise_code",
-    ]
-]
-# "crime_code", "weapon_code"
-y = data["crime_code"]
-```
-
-|      | crime_code | weapon_code |
-| ---- | ---------- | ----------- |
-| knn  | 0.27       | 0.65        |
-|      |            |             |
-|      |            |             |
-|      |            |             |
-|      |            |             |
-
-```python
-X = data[
-    [
-        "month",
-        "day",
-        "hour",
-        "minute",
-        "area",
-        "victim_age",
-        "victim_sex",
-        "victim_descent",
-        "latitude",
-        "longitude",
-        "premise_code",
-    ]
-]
-# "weapon_code", "status"
-# crime_code的准确率实在是太低了，所以就不用了
-y = data["status"]
-```
-
-|            | weapon_code                 | status                  |
-| ---------- | --------------------------- | ----------------------- |
-| knn        | 0.65/0.47（删除空值数据后） | 0.76/0.54（删除空值后） |
-| 朴素贝叶斯 | 0.21/0.23                   | 0.12/0.06               |
-| 决策树     | 0.56/0.36                   | 0.68/0.51               |
-| 链         | 0.56/0.36                   | 0.68/0.51               |
-| 逻辑回归   | /0.55                       | /0.60                   |
+|                     | crime_code | premise_code | weapon_code | status |
+| ------------------- | ---------- | ------------ | ----------- | ------ |
+| Logistic Regression | 0.28       | 0.27         | 0.54        | 0.61   |
+| MLP                 | 0.28       | 0.27         | 0.54        | 0.61   |
+| k-NN                | 0.22       | 0.22         | 0.47        | 0.51   |
+| Naive Bayes         | 0.03       | 0.02         | 0.04        | 0.23   |
+| Decision Tree       | 0.19       | 0.26         | 0.35        | 0.48   |
+| Classifier Chain    | 0.19       | 0.26         | 0.35        | 0.48   |
 
 ## 参与贡献
 
@@ -247,6 +138,10 @@ y = data["status"]
 7. 经审核人员审核后merge到main branch
 
 忽略中英文表达 :triumph: 。
+
+## 贡献者
+
+[![GitHub contributors](https://img.shields.io/github/contributors/ArronVague/Los-Angeles-Crime.svg)](https://github.com/ArronVague/Los-Angeles-Crime/graphs/contributors)
 
 ## 参考文献
 
