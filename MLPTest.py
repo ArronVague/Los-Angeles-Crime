@@ -51,7 +51,7 @@ def get_usefulData_feature_label(data):
             "victim_descent",
             "latitude",
             "longitude",
-            "hour",  # specific_time 
+            "hour",
             "crime_code", 
             "premise_code", 
             "weapon_code",
@@ -83,7 +83,7 @@ def get_usefulData_feature_label(data):
             ]
         ].copy()
         
-        label = feature_label["weapon_code"].copy()  # , "hour", "crime_code", "premise_code", "weapon_code"
+        label = feature_label["hour"].copy()  # , "hour", "crime_code", "premise_code", "weapon_code"
         print(len(feature),len(feature) == len(label))
         return feature, label
     
@@ -112,8 +112,8 @@ def get_train_test_dataset(df_feature,df_label):
     features_test = torch.tensor(features_test).float()
     labels_test = torch.LongTensor(labels_test)
 
-    return features_train[:80000], features_test[:20000], labels_train[:80000], labels_test[:20000]
-
+    # return features_train[:80000], features_test[:20000], labels_train[:80000], labels_test[:20000]
+    return features_train, features_test, labels_train, labels_test
 features_train, features_test, labels_train, labels_test = get_train_test_dataset(feature,label)
 
 
@@ -134,28 +134,30 @@ class ImprovedMLP(nn.Module):
 
         # 输出层
         self.output_layer = nn.Linear(hidden_dims[-1], output_dim)
-        self.softmax = nn.Softmax(dim=1)
+        # self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         for layer in self.hidden_layers:
             x = layer(x)
         x = self.output_layer(x)
-        x = self.softmax(x)
+        # x = self.softmax(x)
         return x
     
 
 
 # 创建 MLP 模型实例
 input_dim = 8  # 输入维度
-hidden_dims = [16, 8, 8, 8, 8, 16]
+hidden_dims = [16, 12, 12, 16]
 output_dim = 24  # 输出维度
-lr = 0.05
-dropout_rate = 0.5
+learn_rate = 0.01
+dropout_rate = 0.2
 model = ImprovedMLP(input_dim, hidden_dims, output_dim,dropout_rate)
 
 # 定义损失函数和优化器
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(),lr=lr)
+# optimizer = torch.optim.Adam(model.parameters(),lr=lr)
+optimizer = torch.optim.SGD(model.parameters(), lr=learn_rate)
+print(model.parameters)
 
 # 打印模型结构
 # print(model)
@@ -171,7 +173,7 @@ test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 print(labels_train[0])
 
 # 训练循环
-num_epochs = 100  # 训练迭代次数
+num_epochs = 2000 # 训练迭代次数
 for epoch in range(num_epochs):
     model.train()
     total_loss = 0
@@ -188,8 +190,21 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
         # total_loss += loss.item() 
+        # 打印参数梯度
+
+    # for name, param in model.named_parameters():
+    #     if param.grad is not None:
+    #         print(f'Parameter: {name}, Gradient norm: {torch.norm(param.grad)}')
+
+    # # 打印参数值
+    # for name, param in model.named_parameters():
+    #     print(f'Parameter: {name}, Value: {param.data}')
 
     train_loss = total_loss / len(train_dataloader)
+
+    # if epoch in(10,20,30):
+    #     print(model.parameters)
+
 
     model.eval()
     total_loss = 0
@@ -204,7 +219,9 @@ for epoch in range(num_epochs):
         loss = criterion(logits, labels)
         total_loss += loss.item()
         _, predicted = torch.max(logits, dim=1)
-        
+
+
+
         # print(len(predicted))
         correct += (predicted == labels).sum().item()
         total += labels.size(0)
@@ -217,4 +234,13 @@ for epoch in range(num_epochs):
 
     # 打印训练过程中的损失
     # print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item()}")
-    print(f"Epoch {epoch+1}/{num_epochs} - Loss: {train_loss} - TestLoss: {test_loss:.4f} - Accuracy: {test_accuracy:.2f}%")
+    if epoch%60 == 1:
+        print(f"Epoch {epoch+1}/{num_epochs} - Loss: {train_loss} - TestLoss: {test_loss:.4f} - Accuracy: {test_accuracy:.2f}")
+    
+    
+        # if epoch == 20:
+        #     print(_,predicted)
+
+        # if epoch ==40:
+        #     print(_,predicted)
+        #     break
